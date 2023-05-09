@@ -16,6 +16,8 @@ if type(messages) == 'table' then
     oldID = messages[1].id
 end
 
+bot.send('AE2 Bot Online...', channel)
+
 while true do
     messages = bot.getMessages(channel)
 
@@ -73,6 +75,29 @@ while true do
                 bot.send('No Items Found', channel)
             end
        end
+
+       if string.find(message, '!searchCrafting') then
+        local search = string.sub(message, 17)
+        local MEItems = systemME.listCraftableItems()
+        local itemsFound = ''
+        local found = false
+        for _,i in pairs(MEItems) do
+            if string.find(i.name, search) then
+                itemsFound = itemsFound .. i.name .. '\n'
+                found = true
+            end
+            if string.len(itemsFound) > 1500 then
+                bot.send(itemsFound, channel)
+                itemsFound = ''
+                sleep(1)
+            end
+        end
+        if found then
+            bot.send(itemsFound, channel)
+        else
+            bot.send('No Craftable Items Found', channel)
+        end
+   end       
 
        if message == '!dumpCrafting' then
             local craftables = systemME.listCraftableItems()
@@ -165,6 +190,7 @@ while true do
             str = str .. '!getCount <item> --> get quantity of item\n'
             str = str .. '!dumpME --> lists all items in ME system\n'
             str = str .. '!search <search> --> looks for all items with search characters in the name\n'
+            str = str .. '!searchCrafting <searc> --> looks for all craftable items with search characters in the name\n'
             str = str .. '!dumpCrafting --> lists all craftable items\n'
             str = str .. '!craft <item> --> crafts item\n'
             str = str .. '!crafting --> lists all items currently crafting\n'
