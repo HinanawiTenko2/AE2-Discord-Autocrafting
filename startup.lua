@@ -88,6 +88,26 @@ while true do
                 bot.send('No Craftable Items', channel)
             end
        end
+
+       if string.find(message, '!craft') then
+            local item = string.sub(message, 8)
+            local craftables = systemME.listCraftableItems()
+            local found = false
+            if craftables[1] then
+                for _,i in pairs(craftables) do
+                    if item == i.name then
+                        found = true
+                        systemME.craftItem(i)
+                        bot.send('Crafting...', channel)
+                    end
+                end
+                if not found then
+                    bot.send('Item Not Craftable', channel)
+                end
+            else
+                bot.send('No Craftable Items', channel)
+            end
+       end
     end
     oldID = messages[1].id
     sleep(1)
