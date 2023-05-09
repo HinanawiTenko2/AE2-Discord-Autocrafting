@@ -108,6 +108,7 @@ while true do
                                     bot.send('Crafting...', channel)
                                     local craft = craftItem({['fingerprint'] = i.fingerprint, ['count'] = count})
                                     print(craft)
+                                    break
                                 elseif string.lower(messages[1].content) == 'stop' then
                                     bot.send('Canceled', channel)
                                     break
