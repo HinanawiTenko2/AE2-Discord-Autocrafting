@@ -90,7 +90,7 @@ while true do
             end
        end
 
-       if string.find(message, '!craft') then
+       if (string.find(message, '!craft')) and not(string.find(message, '!crafting')) then
             local item = string.sub(message, 8)
             local craftables = systemME.listCraftableItems()
             local found = false
@@ -163,7 +163,11 @@ while true do
             str = str .. '!search <search> --> looks for all items with search characters in the name\n'
             str = str .. '!dumpCrafting --> lists all craftable items\n'
             str = str .. '!craft <item> --> crafts item\n'
+            str = str .. '!crafting --> lists all items currently crafting\n'
+
             bot.send(str, channel)
+            sleep(1)
+            messages = bot.getMessages(channel)
         end
 
     end
