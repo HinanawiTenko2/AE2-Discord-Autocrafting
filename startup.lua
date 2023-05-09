@@ -17,6 +17,7 @@ local oldID = messages[1].id
 
 while true do
     messages = bot.getMessages(channel)
+    
     if not(messages[1].id == oldID) then
        local message = messages[1].content
        if string.find(message, '!getCount') then
@@ -33,6 +34,7 @@ while true do
                 bot.send(item .. ' was not found in the system', channel)
             end
        end 
+       
        if message == '!dumpME' then
             local dump = ''
             local MEItems = systemME.listItems()
@@ -44,6 +46,23 @@ while true do
                     sleep(1)
                 end
             end
+            bot.send(dump, channel)
+       end
+
+       if string.find(message, '!search') then
+            local search = string.sub(message, 9)
+            local MEItems = systemME.listItems()
+            local itemsFound = ''            
+            for _,i in pairs(MEItems) do
+                if string.find(i.name, search) then
+                    itemsFound = itemsFound .. i.name .. '\n'
+                end
+                if string.len(itemsFound) > 1500 then
+                    bot.send(itemsFound, channel)
+                    itemsFound = ''
+                end
+            end
+            bot.send(itemsFound, channel)
        end
     end
     oldID = messages[1].id
