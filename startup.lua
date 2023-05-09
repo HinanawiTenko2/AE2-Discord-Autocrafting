@@ -1,4 +1,4 @@
-local DiscordBot = require(DiscordBot)
+local DiscordBot = require('DiscordBot')
 
 tokenF = fs.open('Token', 'r')
 local token = tokenF.readLine()
@@ -18,10 +18,14 @@ while true do
     local messages = bot.getMessages(channel)
     if not(messages[1].id == oldID) then
        local message = messages[1].content
-       if strfind(message, '!getCount') then
-            local item = strsub(message, 11)
-            local count = systemME.getItem(item).amount
-            bot.send(tostring(count), channel)
+       if string.find(message, '!getCount') then
+            local item = string.sub(message, 11)
+            local MEItems = systemME.listItems()
+            for _,i in pairs(MEItems) do
+                if i.name == item then
+                    bot.send(tostring(i.amount), channel)
+                end
+            end
        end 
     end
     oldID = messages[1].id
