@@ -12,8 +12,9 @@ local bot = createBot(token)
 local systemME = peripheral.find('meBridge')
 
 local messages = bot.getMessages(channel)
-local oldID = messages[1].id
-
+if type(messages) == 'table' then
+    oldID = messages[1].id
+end
 
 while true do
     messages = bot.getMessages(channel)
@@ -100,7 +101,10 @@ while true do
                         found = true
                         bot.send('Enter number of items to craft', channel)
                         messages = bot.getMessages(channel)
-                        oldID = messages[1].id
+                        if type(messages) == 'table' then
+                            oldID = messages[1].id
+                        end
+                        
                         while true do
                             messages = bot.getMessages(channel)
                             if type(messages) == 'table' then
