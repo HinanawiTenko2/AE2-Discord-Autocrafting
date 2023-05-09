@@ -97,8 +97,27 @@ while true do
                 for _,i in pairs(craftables) do
                     if item == i.name then
                         found = true
-                        systemME.craftItem(i)
-                        bot.send('Crafting...', channel)
+                        bot.send('Enter number of items to craft', channel)
+                        messages = bot.getMessages(channel)
+                        oldID = messages[1].id
+                        while true do
+                            messages = bot.getMessages(channel)
+                            if not(messages[1].id == oldID) then
+                                if tonumber(messages[1].content) then
+                                    local count = tonumber(messages[1].content)
+                                    bot.send('Crafting...', channel)
+                                    local craft = craftItem({['fingerprint'] = i.fingerprint, ['count'] = count})
+                                    print(craft)
+                                elseif string.lower(messages[1].content) == 'stop' then
+                                    bot.send('Canceled', channel)
+                                    break
+                                else
+                                    bot.send('Bad input, enter a number or type stop to cancel', channel)
+                                end
+                            end
+                            oldID = messages[1].id
+                            sleep(1)
+                        end
                     end
                 end
                 if not found then
