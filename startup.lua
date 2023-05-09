@@ -71,6 +71,23 @@ while true do
                 bot.send('No Items Found', channel)
             end
        end
+
+       if message == '!dumpCrafting' then
+            local craftables = systemME.listCraftableItems()
+            local str = ''
+            if craftables[1] then
+                for _,i in pairs(craftables) do
+                    str = str .. i.name .. '\n'
+                    if string.len(str) > 1500 then
+                        bot.send(str, channel)
+                        str = ''
+                    end
+                end
+                bot.send(str, channel)
+            else   
+                bot.send('No Craftable Items', channel)
+            end
+       end
     end
     oldID = messages[1].id
     sleep(1)
