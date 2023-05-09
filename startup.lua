@@ -20,13 +20,25 @@ while true do
 
     if not(messages[1].id == oldID) then
        local message = messages[1].content
+
+       if message == '!help' then
+            str = ''
+            str = str .. '!help --> lists all commands\n'
+            str = str .. '!getCount <item> --> get quantity of item\n'
+            str = str .. '!dumpME --> lists all items in ME system\n'
+            str = str .. '!search <search> --> looks for all items with search characters in the name\n'
+            str = str .. '!dumpCrafting --> lists all craftable items\n'
+            str = str .. '!craft <item> --> crafts item\n'
+            bot.send(str, channel)
+       end
+
        if string.find(message, '!getCount') then
             local item = string.sub(message, 11)
             local MEItems = systemME.listItems()
             local found = false
             for _,i in pairs(MEItems) do
                 if i.name == item then
-                    bot.send('There is ' .. tostring(i.amount) .. ' ' .. item .. ' in the ME system', channel)
+                    bot.send('There is ' .. tostring(i.amount) .. ' ' .. item .. ' in the system', channel)
                     found = true
                 end
             end
@@ -106,8 +118,10 @@ while true do
                                 if tonumber(messages[1].content) then
                                     local count = tonumber(messages[1].content)
                                     bot.send('Crafting...', channel)
-                                    local craft = craftItem({['fingerprint'] = i.fingerprint, ['count'] = count})
-                                    print(craft)
+                                    local craft = systemME.craftItem({['fingerprint'] = i.fingerprint, ['count'] = count})
+                                    local event, success, message = os.pullEvent('crafting')
+                                    print(success)
+                                    print(message)
                                     break
                                 elseif string.lower(messages[1].content) == 'stop' then
                                     bot.send('Canceled', channel)
@@ -127,6 +141,10 @@ while true do
             else
                 bot.send('No Craftable Items', channel)
             end
+       end
+
+       if message == '!crafting' then
+            print('hello!')
        end
     end
     oldID = messages[1].id
