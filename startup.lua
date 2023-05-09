@@ -23,10 +23,11 @@ while true do
             local MEItems = systemME.listItems()
             for _,i in pairs(MEItems) do
                 if i.name == item then
-                    bot.send(tostring(i.amount), channel)
+                    bot.send('There is ' .. tostring(i.amount) .. ' ' .. item .. ' in the ME system', channel)
                 end
             end
        end 
     end
     oldID = messages[1].id
+    sleep(1)
 end
