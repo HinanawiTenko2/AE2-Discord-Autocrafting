@@ -53,7 +53,7 @@ while true do
             bot.send(dump, channel)
        end
 
-       if string.find(message, '!search') then
+       if string.find(message, '!search') and not(string.find(message, '!searchCrafting')) then
             local search = string.sub(message, 9)
             local MEItems = systemME.listItems()
             local itemsFound = ''
