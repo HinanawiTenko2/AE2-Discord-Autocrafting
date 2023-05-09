@@ -30,10 +30,10 @@ while true do
                 end
             end
             if not found then
-                print(item .. ' was not found in the system')
+                bot.send(item .. ' was not found in the system', channel)
             end
        end 
-       if string.find(message, '!dumpME') then
+       if message == '!dumpME' then
             local dump = ''
             local MEItems = systemME.listItems()
             for _,i in pairs(MEItems) do
@@ -41,6 +41,7 @@ while true do
                 if string.len(dump) > 1500 then
                     bot.send(dump, channel)
                     dump = ''
+                    sleep(1)
                 end
             end
        end
