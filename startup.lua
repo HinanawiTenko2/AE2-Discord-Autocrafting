@@ -18,19 +18,8 @@ local oldID = messages[1].id
 while true do
     messages = bot.getMessages(channel)
 
-    if not(messages[1].id == oldID) then
+    if type(messages) == 'table' and not(messages[1].id == oldID) then
        local message = messages[1].content
-
-       if message == '!help' then
-            str = ''
-            str = str .. '!help --> lists all commands\n'
-            str = str .. '!getCount <item> --> get quantity of item\n'
-            str = str .. '!dumpME --> lists all items in ME system\n'
-            str = str .. '!search <search> --> looks for all items with search characters in the name\n'
-            str = str .. '!dumpCrafting --> lists all craftable items\n'
-            str = str .. '!craft <item> --> crafts item\n'
-            bot.send(str, channel)
-       end
 
        if string.find(message, '!getCount') then
             local item = string.sub(message, 11)
@@ -114,23 +103,24 @@ while true do
                         oldID = messages[1].id
                         while true do
                             messages = bot.getMessages(channel)
-                            if not(messages[1].id == oldID) then
-                                if tonumber(messages[1].content) then
-                                    local count = tonumber(messages[1].content)
-                                    bot.send('Crafting...', channel)
-                                    local craft = systemME.craftItem({['fingerprint'] = i.fingerprint, ['count'] = count})
-                                    local event, success, message = os.pullEvent('crafting')
-                                    print(success)
-                                    print(message)
-                                    break
-                                elseif string.lower(messages[1].content) == 'stop' then
-                                    bot.send('Canceled', channel)
-                                    break
-                                else
-                                    bot.send('Bad input, enter a number or type stop to cancel', channel)
+                            if type(messages) == 'table' then
+                                if not(messages[1].id == oldID) then
+                                    if tonumber(messages[1].content) then
+                                        local count = tonumber(messages[1].content)
+                                        bot.send('Crafting...', channel)
+                                        local craft = systemME.craftItem({['fingerprint'] = i.fingerprint, ['count'] = count})
+                                        break
+                                    elseif string.lower(messages[1].content) == 'stop' then
+                                        bot.send('Canceled', channel)
+                                        break
+                                    else
+                                        bot.send('Bad input, enter a number or type stop to cancel', channel)
+                                    end
                                 end
                             end
-                            oldID = messages[1].id
+                            if type(messages) == 'table' then
+                                oldID = messages[1].id
+                            end
                             sleep(1)
                         end
                     end
@@ -144,9 +134,41 @@ while true do
        end
 
        if message == '!crafting' then
-            print('hello!')
+            local craftables = systemME.listCraftableItems()
+            local found = false
+            local crafting = ''
+            if craftables[1] then
+                for _,i in pairs(craftables) do
+                    if systemME.isItemCrafting(i) then
+                        crafting = crafting .. i.name .. '\n'
+                        found = true
+                    end
+                end
+                if not found then
+                    bot.send('No Items Crafting', channel)
+                else
+                    bot.send(crafting, channel)
+                end
+            else
+                bot.send('Not Craftable Items', channel)
+            end
        end
+
+       
+       if message == '!help' then
+            local str = ''
+            str = str .. '!help --> lists all commands\n'
+            str = str .. '!getCount <item> --> get quantity of item\n'
+            str = str .. '!dumpME --> lists all items in ME system\n'
+            str = str .. '!search <search> --> looks for all items with search characters in the name\n'
+            str = str .. '!dumpCrafting --> lists all craftable items\n'
+            str = str .. '!craft <item> --> crafts item\n'
+            bot.send(str, channel)
+        end
+
     end
-    oldID = messages[1].id
+    if type(messages) == 'table' then
+        oldID = messages[1].id
+    end
     sleep(1)
 end
